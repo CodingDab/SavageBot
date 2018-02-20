@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.Net.Providers.WS4Net;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -27,7 +28,10 @@ namespace SavageBot
             Console.BackgroundColor = ConsoleColor.Gray;
             Console.ForegroundColor = ConsoleColor.DarkRed;
 
-            _client = new DiscordSocketClient();
+            _client = new DiscordSocketClient(new DiscordSocketConfig
+                                    {
+                                        WebSocketProvider = WS4NetProvider.Instance
+                                    });
             _command = new CommandService();
 
             _services = new ServiceCollection()
