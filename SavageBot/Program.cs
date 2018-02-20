@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using SavageBot.Modules;
 
 namespace SavageBot
 {
@@ -43,6 +44,7 @@ namespace SavageBot
 
             // log messages from the client
             _client.Log += Log;
+            _client.UserJoined += Events.UserJoined;
 
             await RegisterCommandsAsync();
 
