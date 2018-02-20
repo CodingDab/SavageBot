@@ -14,7 +14,7 @@ namespace SavageBot.Modules
             SocketGuild guild = user.Guild;
             SocketTextChannel channel = guild.DefaultChannel;
 
-            await channel.SendMessageAsync(user.Username + " has joined. Don't stare :eyes:");
+            await channel.SendMessageAsync(user.Mention + " has joined. Don't stare :eyes:");
         }
     }
 }
