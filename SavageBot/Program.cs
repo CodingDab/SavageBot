@@ -74,7 +74,7 @@ namespace SavageBot
 
             int argPos = 0;
 
-            if(message.HasCharPrefix('$', ref argPos) 
+            if(message.HasStringPrefix("$", ref argPos) 
                 || message.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 var result = await _command.ExecuteAsync(
