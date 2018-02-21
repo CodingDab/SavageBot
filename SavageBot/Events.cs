@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SavageBot.Modules
+namespace SavageBot
 {
-    public class Events // static functions that define events to be carried out 
+    class Events // static functions that define events to be carried out 
     {                   // if some criteria are met
         public static async Task UserJoined(SocketGuildUser user)
         {
