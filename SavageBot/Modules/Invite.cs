@@ -4,17 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord.Commands;
+using Discord.WebSocket;
 
 namespace SavageBot.Modules
 {
     public class Invite : ModuleBase<SocketCommandContext>
     {
         [Command("invite")]
-        [Summary("Experimental: Gives the sender a one-time only invite.")]
-        public async Task InviteAsync()
+        [Summary("Gives the sender an invite.")]
+        public async Task InviteAsync(SocketTextChannel channel, bool temporary = true)
         {
-            await ReplyAsync(Context.User.Mention + " here ya go: "/*+ invite link*/);
-            // giving a weird output for the invite
+            var invite = await channel.CreateInviteAsync(isTemporary: temporary);
+            await ReplyAsync(Context.User.Mention + " here ya go: " + invite.Url);
         }
     }
 }
