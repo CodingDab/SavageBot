@@ -24,7 +24,7 @@ namespace SavageBot.Modules
                     if (x.guildId == Context.Guild.Id)
                     {
                         await ReplyAsync("A werd game is already in progress in this guild.");
-                        break;
+                        return;
                     }
                 }
                 WerdData data = new WerdData(guildId: Context.Guild.Id, werd: GenerateWerd());
@@ -38,8 +38,9 @@ namespace SavageBot.Modules
         public class Guess : ModuleBase<SocketCommandContext>
         {
             [Command("guess")]
-            public async Task GuessAsync(string guess)
+            public async Task GuessAsync(string guess_)
             {
+                string guess = guess_.ToLower();
                 bool gameInProgress = false;
                 WerdData data = new WerdData(0, ""); // stupid initilization isn't really necessary but C# :\
                 foreach(var x in WerdGuilds.WerdGameGuilds)
@@ -60,8 +61,11 @@ namespace SavageBot.Modules
                         WerdGuilds.WerdGameGuilds.Remove(data);
                         await ReplyAsync($"{Context.User.Mention} guessed the word! Now, I can take a nap... :smirk:");
                     }
+                    else if (!IsRealWerd(guess))
+                        await ReplyAsync($"{Context.User.Mention} that's not even a word bruh." +
+                            $" Don't fuck with me. *Wastin' my time.....*");
                     else
-                        await ReplyAsync($"{Context.User.Mention}, your guess earned {Werd.CalculatePoints(guess)} points. *Next.*");
+                        await ReplyAsync($"{Context.User.Mention}, your guess earned {Werd.CalculatePoints(guess, data)} points. *Next.*");
                 }
                 else
                 {
@@ -106,12 +110,44 @@ namespace SavageBot.Modules
             byte[] buffer = new byte[5];
             werd_list.Read(buffer, 0, 5);
 
-            return System.Text.Encoding.Default.GetString(buffer);
+            return Encoding.Default.GetString(buffer);
         }
 
-        public static int CalculatePoints(string guess)
+        public static int CalculatePoints(string guess, WerdData data)
         {
-            return new int();
+            List<int> elementIndices = new List<int>();
+            int points = 0;
+            for(int i = 0; i < 5; i++)
+            {
+                for(int j = 0; j < 5; j++)
+                {
+                    if(guess.ElementAt(i) == data.werd.ElementAt(j))
+                    {
+                        points++;
+                        if (i == j) points++; // add another point (the letter in guess earned 2 points
+                        else continue;
+                    }
+                }
+            }
+            return points;
+        }
+
+        public static bool IsRealWerd(string guess)
+        {
+            for(int i = 0; i < 5757 - 1; i++)
+            {
+                FileStream werd_list = File.OpenRead("../../werds.txt");
+                werd_list.Seek(6 * i, SeekOrigin.Begin); // loop through every line in the file
+
+                byte[] buffer = new byte[5];
+                werd_list.Read(buffer, 0, 5);
+
+                string x = Encoding.Default.GetString(buffer);
+
+                if (guess == x) return true;
+            }
+
+            return false;
         }
     }
 }

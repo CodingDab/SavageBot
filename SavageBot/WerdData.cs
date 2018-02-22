@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace SavageBot
 {
-    class WerdData
-    {
+    public class WerdData // i was getting errors because it is less accessible than a function it was passed to -.-
+    {                     // sometimes, C#.......................
         public string werd;
         public bool gameGoing = false;
         public ulong guildId;
