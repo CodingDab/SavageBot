@@ -54,6 +54,20 @@ namespace SavageBot.Modules
                 }
                 if (gameInProgress)
                 {
+                    bool notYetEncountered = false;
+                    foreach(var user in data.players)
+                    {
+                        if (user.Id == Context.User.Id)
+                        {
+                            notYetEncountered = false;
+                            break;
+                        }
+                        else notYetEncountered = true;
+                    }
+                    if(notYetEncountered)
+                    {
+                        data.players.Add(Context.User);
+                    }
                     if (guess.Length != 5)
                         await ReplyAsync("It's a *five* letter werd! Get it, *got it?*, **good.**");
                     else if (data.werd == guess)
@@ -96,7 +110,35 @@ namespace SavageBot.Modules
         [Summary("Vote to end the game.")]
         public class Vote : ModuleBase<SocketCommandContext>
         {
-
+            [Command("vote")]
+            public async Task VoteAsync()
+            {
+                WerdData data = new WerdData(0, ""); // necessary in order for the code to compile
+                foreach (var x in WerdGuilds.WerdGameGuilds)
+                {
+                    if (x.guildId == Context.Guild.Id)
+                    {
+                        data = x;
+                        break;
+                    }
+                }
+                if (data.guildId != 0)
+                {
+                    if (data.votes >= data.players.Count / 3 * 2)
+                    {   // if 2/3 of the players vote to end the game it can end without admin intervention
+                        WerdGuilds.WerdGameGuilds.Remove(data);
+                        await ReplyAsync($"The vote to end the game has passed.");
+                        await ReplyAsync("Game over.", true); // experimental
+                        return;
+                    }
+                    else
+                    {
+                        data.votes++;
+                    }
+                }
+                else await ReplyAsync($"{Context.User.Mention} ... erm... You can't vote to end a match that doesn't exist...\n"
+                    + $"My faith in mankind has just lowered considerably :face_palm:");
+            }
         }
 
         public static string GenerateWerd()
