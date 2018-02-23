@@ -19,16 +19,14 @@ namespace SavageBot.Modules
             [Command("start")]
             public async Task StartAsync()
             {
-                foreach(var x in WerdGuilds.WerdGameGuilds)
+                GuildData g_data = GuildCenter.GetGuild(Context.Guild.Id);
+                if(g_data.Id == 0) // check to make sure the guild exists in memory
                 {
-                    if (x.guildId == Context.Guild.Id)
-                    {
-                        await ReplyAsync("A werd game is already in progress in this guild.");
-                        return;
-                    }
+                    GuildCenter.Guilds.Add(new GuildData(Context.Guild.Id));
+                    g_data = GuildCenter.GetGuild(Context.Guild.Id); // no need to check this time
                 }
-                WerdData data = new WerdData(guildId: Context.Guild.Id, werd: GenerateWerd());
-                WerdGuilds.WerdGameGuilds.Add(data);
+                g_data.werdData = new WerdData(guildId: Context.Guild.Id, werd: GenerateWerd());
+                g_data.werdData.gameStarted = true;
                 await ReplyAsync("A five letter word has been selected! ``$rules`` to learn how to play. " +
                     "Guess away.... :smile:");
             }
@@ -41,21 +39,12 @@ namespace SavageBot.Modules
             public async Task GuessAsync(string guess_)
             {
                 string guess = guess_.ToLower();
-                bool gameInProgress = false;
-                WerdData data = new WerdData(0, ""); // stupid initilization isn't really necessary but C# :\
-                foreach(var x in WerdGuilds.WerdGameGuilds)
-                {
-                    if (x.guildId == Context.Guild.Id)
-                    {
-                        gameInProgress = true;
-                        data = x;
-                        break;
-                    }
-                }
-                if (gameInProgress)
+                GuildData g_data = GuildCenter.GetGuild(Context.Guild.Id);
+                
+                if (g_data.werdData.gameStarted)
                 {
                     bool notYetEncountered = false;
-                    foreach(var user in data.players)
+                    foreach(var user in g_data.werdData.players)
                     {
                         if (user.Id == Context.User.Id)
                         {
@@ -66,20 +55,20 @@ namespace SavageBot.Modules
                     }
                     if(notYetEncountered)
                     {
-                        data.players.Add(Context.User);
+                        g_data.werdData.players.Add(Context.User);
                     }
                     if (guess.Length != 5)
                         await ReplyAsync("It's a *five* letter werd! Get it, *got it?*, **good.**");
-                    else if (data.werd == guess)
+                    else if (g_data.werdData.werd == guess)
                     {
-                        WerdGuilds.WerdGameGuilds.Remove(data);
+                        g_data.werdData.gameStarted = false;
                         await ReplyAsync($"{Context.User.Mention} guessed the word! Now, I can take a nap... :smirk:");
                     }
                     else if (!IsRealWerd(guess))
                         await ReplyAsync($"{Context.User.Mention} that's not even a word bruh." +
                             $" Don't fuck with me. *Wastin' my time.....*");
                     else
-                        await ReplyAsync($"{Context.User.Mention}, your guess earned {Werd.CalculatePoints(guess, data)} points. *Next.*");
+                        await ReplyAsync($"{Context.User.Mention}, your guess earned {Werd.CalculatePoints(guess, g_data.werdData)} points. *Next.*");
                 }
                 else
                 {
@@ -95,14 +84,7 @@ namespace SavageBot.Modules
             [Command("end")]
             public async Task EndAsync()
             {
-                foreach(var x in WerdGuilds.WerdGameGuilds)
-                {
-                    if(x.guildId == Context.Guild.Id)
-                    {
-                        WerdGuilds.WerdGameGuilds.Remove(x);
-                        break;
-                    }
-                }
+                GuildCenter.GetGuild(Context.Guild.Id).werdData.gameStarted = false;
                 await ReplyAsync("The game has ended.");
             }
         }
@@ -113,27 +95,20 @@ namespace SavageBot.Modules
             [Command("vote")]
             public async Task VoteAsync()
             {
-                WerdData data = new WerdData(0, ""); // necessary in order for the code to compile
-                foreach (var x in WerdGuilds.WerdGameGuilds)
+                GuildData g_data = new GuildData(0); // necessary in order for the code to compile
+                g_data = GuildCenter.GetGuild(Context.Guild.Id);
+                if (g_data.werdData.gameStarted)
                 {
-                    if (x.guildId == Context.Guild.Id)
-                    {
-                        data = x;
-                        break;
-                    }
-                }
-                if (data.guildId != 0)
-                {
-                    if (data.votes >= data.players.Count / 3 * 2)
+                    if (g_data.werdData.votes >= g_data.werdData.players.Count / 3 * 2)
                     {   // if 2/3 of the players vote to end the game it can end without admin intervention
-                        WerdGuilds.WerdGameGuilds.Remove(data);
+                        g_data.werdData.gameStarted = false;
                         await ReplyAsync($"The vote to end the game has passed.");
                         await ReplyAsync("Game over.", true); // experimental
                         return;
                     }
                     else
                     {
-                        data.votes++;
+                        g_data.werdData.votes++;
                     }
                 }
                 else await ReplyAsync($"{Context.User.Mention} ... erm... You can't vote to end a match that doesn't exist...\n"
@@ -155,7 +130,7 @@ namespace SavageBot.Modules
             return Encoding.Default.GetString(buffer);
         }
 
-        public static int CalculatePoints(string guess, WerdData data)
+        public static int CalculatePoints(string guess, WerdData werdData)
         {
             List<int> elementIndices = new List<int>();
             int points = 0;
@@ -163,7 +138,7 @@ namespace SavageBot.Modules
             {
                 for(int j = 0; j < 5; j++)
                 {
-                    if(guess.ElementAt(i) == data.werd.ElementAt(j))
+                    if(guess.ElementAt(i) == werdData.werd.ElementAt(j))
                     {
                         points++;
                         if (i == j) points++; // add another point (the letter in guess earned 2 points

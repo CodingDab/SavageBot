@@ -12,6 +12,7 @@ namespace SavageBot
     {
         public ulong Id;
         public SocketChannel defaultChannel;
+        public WerdData werdData;
         public GuildData(ulong Id)
         {
             this.Id = Id;
