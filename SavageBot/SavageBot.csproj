@@ -87,6 +87,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GuildCenter.cs" />
+    <Compile Include="GuildData.cs" />
     <Compile Include="Modules\Admin.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Modules\Werd.cs" />
