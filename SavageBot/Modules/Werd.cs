@@ -32,7 +32,7 @@ namespace SavageBot.Modules
             }
         }
 
-        [Summary("Guess a word.")]
+        [Summary("Guess a werd.")]
         public class Guess : ModuleBase<SocketCommandContext>
         {
             [Command("guess")]
@@ -95,9 +95,8 @@ namespace SavageBot.Modules
             [Command("vote")]
             public async Task VoteAsync()
             {
-                GuildData g_data = new GuildData(0,""); // necessary in order for the code to compile
-                g_data = GuildCenter.GetGuild(Context.Guild.Id);
-                if (g_data.werdData.gameStarted)
+                GuildData g_data = GuildCenter.GetGuild(Context.Guild.Id); // if id == 0 then the guild's info doesnt exist
+                if (g_data.Id != 0 && g_data.werdData.gameStarted) // check for condition stated above
                 {
                     if (g_data.werdData.votes >= g_data.werdData.players.Count / 3 * 2)
                     {   // if 2/3 of the players vote to end the game it can end without admin intervention
