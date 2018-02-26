@@ -22,7 +22,7 @@ namespace SavageBot.Modules
                 GuildData g_data = GuildCenter.GetGuild(Context.Guild.Id);
                 if(g_data.Id == 0) // check to make sure the guild exists in memory
                 {
-                    GuildCenter.Guilds.Add(new GuildData(Context.Guild.Id));
+                    GuildCenter.Guilds.Add(new GuildData(Context.Guild.Id, Context.Guild.Name));
                     g_data = GuildCenter.GetGuild(Context.Guild.Id); // no need to check this time
                 }
                 g_data.werdData = new WerdData(guildId: Context.Guild.Id, werd: GenerateWerd());
@@ -95,7 +95,7 @@ namespace SavageBot.Modules
             [Command("vote")]
             public async Task VoteAsync()
             {
-                GuildData g_data = new GuildData(0); // necessary in order for the code to compile
+                GuildData g_data = new GuildData(0,""); // necessary in order for the code to compile
                 g_data = GuildCenter.GetGuild(Context.Guild.Id);
                 if (g_data.werdData.gameStarted)
                 {

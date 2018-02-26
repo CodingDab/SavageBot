@@ -11,11 +11,13 @@ namespace SavageBot
     class GuildData
     {
         public ulong Id;
+        public string Name;
         public SocketChannel defaultChannel;
         public WerdData werdData;
-        public GuildData(ulong Id)
+        public GuildData(ulong Id, string Name)
         {
             this.Id = Id;
+            this.Name = Name;
         }
     }
 }
