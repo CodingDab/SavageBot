@@ -16,5 +16,11 @@ namespace SavageBot
 
             await channel.SendMessageAsync(user.Mention + " has joined. Don't stare :eyes:");
         }
+        public static async Task UserBanned(SocketUser user, SocketGuild guild)
+        {
+            SocketTextChannel channel = guild.DefaultChannel;
+
+            await channel.SendMessageAsync(user.Username + " has been banned... :scream:");
+        }
     }
 }

@@ -45,6 +45,7 @@ namespace SavageBot
             // log messages from the client
             _client.Log += Log;
             _client.UserJoined += Events.UserJoined;
+            _client.UserBanned += Events.UserBanned;
 
             await RegisterCommandsAsync();
 
