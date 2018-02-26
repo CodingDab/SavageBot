@@ -47,6 +47,8 @@ namespace SavageBot
             _client.UserJoined += Events.UserJoined;
             _client.UserBanned += Events.UserBanned;
 
+            GuildCenter.LoadGuilds();
+
             await RegisterCommandsAsync();
 
             await _client.LoginAsync(Discord.TokenType.Bot, token);

@@ -17,11 +17,11 @@ namespace SavageBot
         // hard data
         public ulong defaultChannel;
         public WerdData werdData;
-        public GuildData(ulong Id, string Name)
+        public GuildData(ulong Id, string Name, ulong defaultChannel = 0)
         {
             this.Id = Id;
             this.Name = Name;
-            this.defaultChannel = 0; // null
+            this.defaultChannel = defaultChannel; // null
         }
     }
 }

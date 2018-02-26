@@ -57,5 +57,20 @@ namespace SavageBot
             settings.AppendChild(guilds);
             settings.Save("../../guild_settings.xml");
         }
+        public static void LoadGuilds()
+        {
+            XmlDocument settings = new XmlDocument();
+            settings.Load("../../guild_settings.xml");
+            var guilds = settings.DocumentElement;
+
+            for (int i = 0; i < guilds.ChildNodes.Count; i++)
+            {
+                Guilds.Add(new GuildData(
+                    Convert.ToUInt64(guilds.SelectSingleNode("Guild" + (i == 0 ? null : i.ToString())).SelectSingleNode("Name").Value),
+                    guilds.SelectSingleNode("Guild" + (i == 0 ? null : i.ToString())).SelectSingleNode("Name").Value,
+                    Convert.ToUInt64(guilds.SelectSingleNode("Guild" + (i == 0 ? null : i.ToString())).SelectSingleNode("DefaultChannel").Value)
+                ));
+            }
+        }
     }
 }
