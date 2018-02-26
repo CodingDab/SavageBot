@@ -91,6 +91,7 @@
     <Compile Include="GuildData.cs" />
     <Compile Include="Modules\Admin.cs" />
     <Compile Include="Events.cs" />
+    <Compile Include="Modules\Server.cs" />
     <Compile Include="Modules\Werd.cs" />
     <Compile Include="Modules\Invite.cs" />
     <Compile Include="Modules\Ping.cs" />
