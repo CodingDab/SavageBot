@@ -58,7 +58,7 @@ namespace SavageBot
 
         private Task Log(LogMessage logMsg)
         {
-            Console.WriteLine(logMsg);
+            Console.WriteLine(logMsg); 
 
             return Task.FromResult<object>(null); // cuz my .Net version is old RIP
         }
@@ -85,7 +85,10 @@ namespace SavageBot
                     argPos,
                     _services);
 
-                if (!result.IsSuccess) Console.WriteLine(result.ErrorReason);
+                if (!result.IsSuccess)
+                {
+                    await msg.Channel.SendMessageAsync($"{msg.Author.Mention}\nError: {result.ErrorReason}");
+                }
             }
         }
 

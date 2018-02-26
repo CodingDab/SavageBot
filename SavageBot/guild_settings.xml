@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<guilds>
+  <Guild>
+    <Name>Heaven</Name>
+    <Id>269278777089982475</Id>
+    <DefaultChannel>0</DefaultChannel>
+  </Guild>
+  <Guild1>
+    <Name>BotTest</Name>
+    <Id>415889574909181974</Id>
+    <DefaultChannel>0</DefaultChannel>
+  </Guild1>
+</guilds>
