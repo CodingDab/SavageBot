@@ -1,20 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <guilds>
   <Guild>
-    <Name>
-    </Name>
-    <Id>0</Id>
-    <DefaultChannel>0</DefaultChannel>
+    <Name>BotTest</Name>
+    <Id>415889574909181974</Id>
+    <DefaultChannel>415889574909181976</DefaultChannel>
   </Guild>
-  <Guild1>
-    <Name>
-    </Name>
-    <Id>0</Id>
-    <DefaultChannel>0</DefaultChannel>
-  </Guild1>
-  <Guild2>
-    <Name>Heaven</Name>
-    <Id>269278777089982475</Id>
-    <DefaultChannel>0</DefaultChannel>
-  </Guild2>
 </guilds>

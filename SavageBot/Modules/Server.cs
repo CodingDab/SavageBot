@@ -24,6 +24,8 @@ namespace SavageBot.Modules
                 {
                     var builder = new EmbedBuilder();
                     builder.WithTitle("$AVAGE Bot settings for: " + Context.Guild.Name);
+                    builder.AddField("Default Channel",
+                        (g_data.defaultChannel==0?"Not set.": Context.Guild.GetChannel(g_data.defaultChannel).Id.ToString()));
                     builder.WithThumbnailUrl(Context.Guild.IconUrl);
                     await Context.Channel.SendMessageAsync("", false, builder);
                 }
@@ -33,6 +35,17 @@ namespace SavageBot.Modules
             {
                 GuildCenter.SaveGuilds();
                 await ReplyAsync(Context.User.Mention + " guild settings have been saved.");
+            }
+            [Command("default-channel")]
+            [RequireBotPermission(GuildPermission.ManageChannels)]
+            public async Task DefaultChannelAsync(SocketChannel channel)
+            {
+                GuildData g_data = GuildCenter.GetGuild(Context.Guild.Id);
+                if (g_data.Id == 0) g_data = new GuildData(Context.Guild.Id, Context.Guild.Name);
+                g_data.defaultChannel = channel.Id;
+                GuildCenter.Guilds.Add(g_data);
+                GuildCenter.SaveGuilds();
+                await ReplyAsync(Context.User.Mention + ", guild settings updated.");
             }
         }
 

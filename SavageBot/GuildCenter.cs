@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.IO;
 
 namespace SavageBot
 {
@@ -59,9 +60,10 @@ namespace SavageBot
         }
         public static void LoadGuilds()
         {
+            if (File.ReadAllText("../../guild_settings.xml") == "") return;
             XmlDocument settings = new XmlDocument();
             settings.Load("../../guild_settings.xml");
-            var guilds = settings.DocumentElement;
+            var guilds = settings.FirstChild;
 
             for (int i = 0; i < guilds.ChildNodes.Count; i++)
             {
